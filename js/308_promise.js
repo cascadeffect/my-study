@@ -42,7 +42,6 @@ function isPositiveByPromise(number) {
     setTimeout(() => {
       if (typeof number === 'number') {
         // 성공 => resolve
-        console.log(number); // vc
         resolve(number >= 0 ? '양수' : '음수');
       } else {
         // 실패 => reject
@@ -75,7 +74,6 @@ res
 // 3. Promise 객체로 콜백 지옥 탈출하기
 
 // 모든 함수의 인자에서 콜백 함수 제거하고, 리턴문에서 Promise 객체 생성할 때 resolve와 reject를 인자로 한 실행자 함수를 생성자의 인자로 전달
-
 function taskA(a, b) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -85,7 +83,7 @@ function taskA(a, b) {
   });
 }
 
-function taskB(a, resolve, reject) {
+function taskB(a) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const res = a * 2;
@@ -94,7 +92,7 @@ function taskB(a, resolve, reject) {
   });
 }
 
-function taskC(a, resolve, reject) {
+function taskC(a) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const res = a * -1;
@@ -109,19 +107,36 @@ function taskC(a, resolve, reject) {
 // 3. 비동기 작업이 성공하면 Promise 객체의 then 메서드를 사용하여 resolve 함수 실행
 // 4. taskB 함수의 리턴 값을 리턴
 // 5. (반복)
-// => then chainin
+// => then chaining
 taskA(5, 1)
   .then((a_res) => {
-    console.log('task A resul:', a_res);
+    console.log('task A result:', a_res);
     return taskB(a_res);
   }) // 여기까지 taskB(arg)와 같음 (위/아래 분리 가능)
   .then((b_res) => {
-    console.log('task B resul:', b_res);
+    console.log('task B result:', b_res);
     return taskC(b_res);
   }) // 여기까지 taskC(arg)와 같음 (위/아래 분리 가능)
   .then((c_res) => {
-    console.log('task C resul:', c_res);
+    console.log('task C result:', c_res);
   });
+
+// 위/아래 분리
+const bPromiseResult = taskA(10, 3)
+  .then((a_res) => {
+    console.log('task A result:', a_res);
+    return taskB(a_res);
+  })
+  .then((b_res) => {
+    console.log('task B result:', b_res);
+    return taskC(b_res);
+  });
+
+console.log('lorem'); // 위/아래 분리
+
+bPromiseResult.then((c_res) => {
+  console.log('task C result:', c_res);
+});
 
 // 콜백 지옥
 // taskA(4, 5, (a_res) => {
