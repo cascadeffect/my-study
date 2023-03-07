@@ -19,7 +19,7 @@ function App() {
   // Inline styling
   const style = {
     App: {
-      backgroundColor: 'black',
+      backgroundColor: 'skyblue',
     },
     h2: {
       color: 'red',
